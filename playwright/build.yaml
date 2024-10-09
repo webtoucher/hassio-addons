@@ -9,4 +9,4 @@ codenotary:
   signer: mirakuru@webtoucher.ru
   base_image: notary@home-assistant.io
 args:
-  PLAYWRIGHT_VERSION: 1.47.2
+  PLAYWRIGHT_VERSION: 1.26.1
