@@ -1,0 +1,30 @@
+---
+name: "Mercury Proxy"
+description: "TCP/IP proxy for Incotex Mercury meters connected via RS485/CAN bus"
+version: "0.1.0"
+slug: "mercury_proxy"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armv7
+url: https://github.com/webtoucher/hassio-addons/tree/main/mercury-proxy
+startup: services
+boot: auto
+host_network: true
+uart: true
+usb: true
+options:
+  meter_address: 37793503
+  meter_port: "/dev/ttyACM0"
+  proxy_port: 5053
+  api: true
+  api_port: 5054
+  log_level: info
+schema:
+  meter_address: int
+  meter_port: str
+  proxy_port: port
+  api: bool
+  api_port: port
+  log_level: list(debug|info|warning)

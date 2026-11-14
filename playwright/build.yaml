@@ -6,7 +6,7 @@ build_from:
   i386: ghcr.io/home-assistant/i386-base-debian:bookworm
   armhf: ghcr.io/home-assistant/armhf-base-raspbian:bookworm
 codenotary:
-  signer: mirakuru@webtoucher.ru
+  signer: webtoucher@ya.ru
   base_image: notary@home-assistant.io
 args:
   PLAYWRIGHT_VERSION: 1.26.1
