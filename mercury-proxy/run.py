@@ -15,6 +15,7 @@ from pathlib import Path
 from socket import AF_INET, SOCK_STREAM, socket
 from simple_socket_server import SimpleSocketServer
 from threading import Thread
+from typing import Optional
 
 OPTIONS_PATH = Path('/data/options.json')
 DEFAULT_PROXY_PORT = 5053
@@ -47,6 +48,21 @@ def is_meter_port_reachable(port: str) -> bool:
         return True
     except OSError:
         return False
+
+
+def meter_serial_number(meter: Meter) -> Optional[int]:
+    """ mercury-base 1.6 keeps serial number on the meter, newer versions in meter.info """
+    info = getattr(meter, 'info', None)
+    if info is not None:
+        return info.serial_number
+    return getattr(meter, 'serial_number', None)
+
+
+def meter_model(meter: Meter) -> str:
+    """ Meter model name in the same way for both mercury-base layouts """
+    info = getattr(meter, 'info', None)
+    model = info.model if info is not None else getattr(meter, 'model', None)
+    return 'M%s' % model if model else '<unknown>'
 
 
 def connect_meter(meters: Meters, address: int, port: str, logger: logging.Logger) -> bool:
@@ -99,8 +115,8 @@ def main():
     def on_connect(meter: Meter):
         logger.info(
             'Meter %s with serial number %s is connected',
-            meter.info.model and 'M%s' % meter.info.model or '<unknown>',
-            meter.info.serial_number
+            meter_model(meter),
+            meter_serial_number(meter)
         )
 
     @meters_events.on('failed_connect')
@@ -109,11 +125,11 @@ def main():
 
     @meters_events.on('request')
     def on_request(meter: Meter, package: bytes):
-        logger.debug('[proxy] --> [%s]\t%s', meter.info.serial_number or 'new meter', hex_str(package, ' '))
+        logger.debug('[proxy] --> [%s]\t%s', meter_serial_number(meter) or 'new meter', hex_str(package, ' '))
 
     @meters_events.on('answer')
     def on_answer(meter: Meter, package: bytes):
-        logger.debug('[proxy] <-- [%s]\t%s', meter.info.serial_number or 'new meter', hex_str(package, ' '))
+        logger.debug('[proxy] <-- [%s]\t%s', meter_serial_number(meter) or 'new meter', hex_str(package, ' '))
 
     @socket_server.on('start')
     def on_start(ip: str, port: int):

@@ -1,7 +1,7 @@
 ---
 name: "Mercury Proxy"
 description: "TCP/IP proxy for Incotex Mercury meters connected via RS485/CAN bus"
-version: "0.1.0"
+version: "0.1.1"
 slug: "mercury_proxy"
 init: false
 arch:
