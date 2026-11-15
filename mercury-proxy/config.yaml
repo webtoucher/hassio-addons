@@ -1,7 +1,7 @@
 ---
 name: "Mercury Proxy"
 description: "TCP/IP proxy and REST API for Incotex Mercury meters connected via RS485/CAN bus"
-version: "0.3.0"
+version: "0.4.0"
 slug: "mercury_proxy"
 init: false
 arch:
@@ -19,19 +19,26 @@ ports:
 ports_description:
   5053/tcp: "Meter bus proxy for the Configurator"
   5054/tcp: "REST API"
+watchdog: "tcp://[HOST]:[PORT:5053]"
 options:
-  meter_address: 37793503
-  meter_port: "/dev/ttyACM0"
+  meters:
+    - address: 37793503
+      port: "/dev/ttyACM0"
   baudrate: 9600
   api: true
   api_token: ""
   log_level: info
+  log_console: true
   reconnect_interval: 30
 schema:
-  meter_address: int
-  meter_port: str
+  meters:
+    - address: int
+      port: str
   baudrate: int(1200,115200)
+  timeout: float(0.1,120)?
+  connect_timeout: float(0.1,120)?
   api: bool
   api_token: str?
   log_level: list(debug|info|warning)
+  log_console: bool
   reconnect_interval: float(0,3600)

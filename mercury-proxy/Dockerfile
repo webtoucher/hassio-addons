@@ -31,4 +31,6 @@ ENV PATH="/opt/venv/bin:${PATH}"
 COPY run.sh /app/run.sh
 RUN chmod a+x /app/run.sh
 
-ENTRYPOINT ["/app/run.sh"]
+# CMD, not ENTRYPOINT: the base image keeps /init (S6-Overlay) as PID 1, because
+# with-contenv in run.sh needs /run/s6/container_environment created by it.
+CMD ["/app/run.sh"]
