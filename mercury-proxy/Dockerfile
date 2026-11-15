@@ -1,7 +1,8 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-ARG MERCURY_PROXY_REF=master
+# The proxy itself is installed from its own repository: its code is not kept here.
+ARG MERCURY_PROXY_REF=v2.0.0
 
 ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1 \
@@ -20,18 +21,14 @@ RUN apt-get update \
         python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-COPY requirements.txt /app/requirements.txt
-
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/venv/bin/pip install --no-cache-dir -r /app/requirements.txt \
-    && /opt/venv/bin/pip install --no-cache-dir --no-deps \
+    && /opt/venv/bin/pip install --no-cache-dir \
         "mercury-proxy @ git+https://github.com/webtoucher/mercury-proxy.git@${MERCURY_PROXY_REF}"
 
 ENV PATH="/opt/venv/bin:${PATH}"
 
-COPY run.py /app/run.py
+COPY run.sh /app/run.sh
+RUN chmod a+x /app/run.sh
 
-ENTRYPOINT ["python3", "-u", "/app/run.py"]
+ENTRYPOINT ["/app/run.sh"]

@@ -7,4 +7,4 @@ codenotary:
   signer: webtoucher@ya.ru
   base_image: notary@home-assistant.io
 args:
-  MERCURY_PROXY_REF: master
+  MERCURY_PROXY_REF: v2.0.0
